@@ -1,9 +1,10 @@
-import { parse } from 'csv-parse'
-import { createReadStream,  } from 'node:fs'
+const { parse } = require('csv-parse')
+const { createReadStream } = require('fs')
+const path = require('path')
 
 // createReadStream creates an event emitter which we can then listen to using the on() function
 // this stream created reads or in other words gives data
-const stream = createReadStream('../../data/kepler_data.csv')
+const stream = createReadStream(path.join(__dirname,'..','..','data','kepler_data.csv'))
 
 const parser = parse({
     comment: '#',
@@ -27,19 +28,30 @@ function isHabitablePlanet(planet) {
     return planet['koi_disposition'] === 'CONFIRMED' && (planet['koi_insol'] > 0.36 && planet['koi_insol'] < 1.11) && planet['koi_prad'] < 1.6
 }
 
-// using the pipe function, we ca connect the stream that gives data (stream) with the one that takes it data or writes it (parser)
-stream.pipe(parser)
-    .on('data', data => {
-        if (isHabitablePlanet(data)){
-            habitablePlanets.push(data)
-        }
+// Use pormises to handle asynchornous behaviour. The parser should finish before any request is sent to get planets.
+function loadPlanetsData() {
+    // using the pipe function, we can connect the stream that gives data (stream) with the one that takes/writes it (parser)
+    return new Promise((resolve, reject) => {
+        stream.pipe(parser)
+        .on('data', data => {
+            if (isHabitablePlanet(data)){
+                habitablePlanets.push(data)
+            }
+        })
+        .on('error', (err) => {
+            console.log(err)
+            reject(err)
+        })
+        .on('end', () => {
+            console.log(`${habitablePlanets.length} habitable planets found!`)
+            resolve();
+        })
     })
-    .on('error', () => console.log(' something went wrong while reading file'))
-    .on('end', () => {
-        console.log(habitablePlanets.map(planet => `planet name: ${planet['kepler_name']}`))
-        console.log(`${habitablePlanets.length} habitable planets found!`)
-    })
+        
+}
+
 
 module.exports = {
+    loadPlanetsData,
     planets: habitablePlanets,
 }
