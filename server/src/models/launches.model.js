@@ -14,6 +14,8 @@ const launch = {
 launches.set(launch.flightNumber, launch)
 // access launches using get
 
+let latestFlightNumber = Array.from(launches.keys()).pop()
+
 // GET
 function getAllLaunches(){
     return Array.from(launches.values())
@@ -25,6 +27,13 @@ function getLaunch(flightNumber) {
 
 // POST
 function addNewLaunch(launch) {
+    latestFlightNumber++
+    Object.assign(launch, {
+        flightNumber: latestFlightNumber,
+        customer: ['NASA', 'NOOA'],
+        upcoming: true,
+        success: true,
+    })
     launches.set(launch.flightNumber, launch)
     return launches.get(launch.flightNumber)
 }
