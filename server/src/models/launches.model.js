@@ -14,7 +14,24 @@ const launch = {
 launches.set(launch.flightNumber, launch)
 // access launches using get
 
+// GET
+function getAllLaunches(){
+    return Array.from(launches.values())
+}
+
+function getLaunch(flightNumber) {
+    return launches.get(flightNumber)
+}
+
+// POST
+function addNewLaunch(launch) {
+    launches.set(launch.flightNumber, launch)
+    return launches.get(launch.flightNumber)
+}
+
 
 module.exports = {
-    launches,
+    getAllLaunches,
+    getLaunch,
+    addNewLaunch,
 }
