@@ -8,12 +8,13 @@ function httpGetAllLaunches(req, res) {
 // GET Launch
 
 // POST Launch
-function httpPostLaunch(req, res) {
+function httpAddNewLaunch(req, res) {
     const launch = req.body
+    launch.launchDate = new Date(launch.launchDate)
     return res.status(200).json(addNewLaunch(launch))
 }
 
 module.exports = {
     httpGetAllLaunches,
-    httpPostLaunch,
+    httpAddNewLaunch,
 }
