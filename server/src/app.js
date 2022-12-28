@@ -17,11 +17,14 @@ app.use(cors({
 app.use(morgan('combined'))
 
 app.use(express.json())
-app.use(planetsRouter)
-app.use(launchesRouter)
-
 // Afeter adding the front end to out backend folder with the build script in client
 // we can serve it directly from our backend using middleware.
 app.use(express.static(path.join(__dirname, "..", "public")))
+
+app.use(planetsRouter)
+app.use(launchesRouter)
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "public", "index.html"))
+})
 
 module.exports = app
