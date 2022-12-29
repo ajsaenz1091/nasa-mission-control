@@ -16,13 +16,13 @@ launches.set(launch.flightNumber, launch)
 
 let latestFlightNumber = Array.from(launches.keys()).pop()
 
-// GET
-function getAllLaunches(){
-    return Array.from(launches.values())
+function existsLaunchWithId(launchId) {
+    return launches.has(launchId)
 }
 
-function getLaunch(flightNumber) {
-    return launches.get(flightNumber)
+// GET
+function getAllLaunches() {
+    return Array.from(launches.values())
 }
 
 // POST
@@ -39,9 +39,19 @@ function addNewLaunch(launch) {
     launches.set(launch.flightNumber, launch)
 }
 
+// DELETE
+function abortLaunch(launchId) {
+    aborted = launches.get(launchId)
+    aborted.upcoming = false
+    aborted.success = false
+
+    return aborted
+}
+
 
 module.exports = {
     getAllLaunches,
-    getLaunch,
     addNewLaunch,
+    abortLaunch,
+    existsLaunchWithId,
 }
