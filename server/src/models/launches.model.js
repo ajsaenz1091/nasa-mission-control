@@ -1,3 +1,5 @@
+const Launch = require('./launches.mongo')
+
 const launches = new Map()
 
 const launch = {
