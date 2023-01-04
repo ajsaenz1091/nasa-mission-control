@@ -33,7 +33,7 @@ async function saveNewLaunch(launch) {
     try {
         // insert + update = upsert
         // The upsert makes sure that a planet is only created once(only if it does not already exists)
-        await Launch.updateOne({
+        await Launch.findOneAndUpdate({
             flightNumber: launch.flightNumber,
         }, launch, {
             upsert: true,
