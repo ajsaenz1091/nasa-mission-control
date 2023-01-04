@@ -23,10 +23,7 @@ mongoose.set('strictQuery', true)
 
 // We want the planets to be loaded before any request is made to the server so we use await
 async function startServer() {
-    await mongoose.connect(MONGO_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+    await mongoose.connect(MONGO_URL)
     await loadPlanetsData()
     server.listen(PORT, () => {
         console.log(`Listening on port ${PORT}...`)
