@@ -28,5 +28,8 @@
   "homepage": "https://github.com/ajsaenz1091/nasa-mission-control#readme",
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "mongoose": "^6.8.2"
   }
 }
