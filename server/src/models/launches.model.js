@@ -1,6 +1,8 @@
 const Launch = require('./launches.mongo')
 const Planet = require('./planets.mongo')
 
+const DEFAULT_FLIGHT_NUMBER = 100
+
 const launch = {
     flightNumber: 100,
     mission: 'Kepler Exploration X',
@@ -41,6 +43,21 @@ async function saveNewLaunch(launch) {
     }
 }
 
+// getLatestFlightNumber will help us with incrementing the flightNumber every time we create a new Launch
+async function getLatestFlightNumber() {
+    const latestLaunch = await Launch
+        .findOne()
+        .sort('-flightNumber')
+
+    if (!latestLaunch) {
+        return DEFAULT_FLIGHT_NUMBER
+    }
+
+    return latestLaunch.flightNumber
+}
+
+console.log(getLatestFlightNumber())
+
 // GET
 async function getAllLaunches() {
     return await Launch.find({},{
@@ -49,17 +66,18 @@ async function getAllLaunches() {
 }
 
 // POST
-function addNewLaunch(launch) {
-    latestFlightNumber++
-    
-    Object.assign(launch, {
+
+async function scheduleNewLaunch(launch) {
+    const latestFlightNumber = await getLatestFlightNumber() + 1
+
+    const newLauch = Object.assign(launch, {
         flightNumber: latestFlightNumber,
-        customer: ['NASA', 'NOOA'],
+        customers: ['NASA', 'NOOA'],
         upcoming: true,
         success: true,
     })
 
-    launches.set(launch.flightNumber, launch)
+    saveNewLaunch(newLauch)
 }
 
 // DELETE
@@ -74,7 +92,7 @@ function abortLaunch(launchId) {
 
 module.exports = {
     getAllLaunches,
-    addNewLaunch,
+    scheduleNewLaunch,
     abortLaunch,
     existsLaunchWithId,
 }
