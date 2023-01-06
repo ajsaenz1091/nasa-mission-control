@@ -24,6 +24,7 @@ const SPACEX_API_URL = 'https://api.spacexdata.com/v4/launches/query'
 const LAUNCHES_REQ_BODY = {
     query: {},
     options: {
+        pagination: false,
         populate: [
             {
                 path: 'rocket',
@@ -32,7 +33,7 @@ const LAUNCHES_REQ_BODY = {
                 }
             },
             {
-                path: payloads,
+                path: 'payloads',
                 select: {
                     customers: 1
                 }
@@ -43,6 +44,26 @@ const LAUNCHES_REQ_BODY = {
 
 async function loadLaunchesData() {
     const response = await axios.post(SPACEX_API_URL, LAUNCHES_REQ_BODY)
+
+    const launchDocs = response.data.docs
+
+    for (const launchDoc of launchDocs) {
+
+        const customers = launchDoc.payloads.flatMap(payload => payload.customers)
+
+        const launch = {
+            flightNumber: launchDoc.flight_number, // flight_number
+            mission: launchDoc.name, // name
+            rocket: launchDoc.rocket.name, // rocket.name in response from axios request 
+            launchDate: launchDoc.date_local, // date_local
+            // destination: 'Kepler-442 b', // N/A
+            customers, // payload.customers for each payload
+            upcoming: launchDoc.upcoming, // upcoming
+            success: launchDoc.success, // success
+        }
+
+        console.log(`${launch.flightNumber} ${launch.mission}`)
+    }
 }
 
 async function existsLaunchWithId(launchId) {
