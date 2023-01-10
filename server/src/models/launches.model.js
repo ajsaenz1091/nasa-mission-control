@@ -130,10 +130,12 @@ async function getLatestFlightNumber() {
 }
 
 // GET
-async function getAllLaunches() {
+async function getAllLaunches(skip,limit) {
     return await Launch.find({},{
         '_id': 0, '__v': 0,
     })
+    .skip(skip)
+    .limit(limit)
 }
 
 // POST
