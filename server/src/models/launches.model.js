@@ -42,8 +42,14 @@ const LAUNCHES_REQ_BODY = {
     }
 }
 
-async function loadLaunchesData() {
+async function populateLaunches() {
+
     const response = await axios.post(SPACEX_API_URL, LAUNCHES_REQ_BODY)
+
+    if(response.status != 200) {
+        console.log('Problem downloading launch data')
+        throw new Error('Launch data download failed')
+    }
 
     const launchDocs = response.data.docs
 
@@ -56,29 +62,46 @@ async function loadLaunchesData() {
             mission: launchDoc.name, // name
             rocket: launchDoc.rocket.name, // rocket.name in response from axios request 
             launchDate: launchDoc.date_local, // date_local
-            // destination: 'Kepler-442 b', // N/A
+            destination: 'Kepler-442 b', // N/A
             customers, // payload.customers for each payload
             upcoming: launchDoc.upcoming, // upcoming
             success: launchDoc.success, // success
         }
 
         console.log(`${launch.flightNumber} ${launch.mission}`)
+
+        // TODO populate launches collection
+
+        await saveNewLaunch(launch)
     }
+}
+
+async function loadLaunchesData() {
+    // verify if data has been already been loaded before making request
+    const launch = await findLaunch({
+        flightNumber: 1,
+        rocket: 'Falcon 1',
+        mission: 'FalconSat'
+    })
+
+    if (launch) {
+        console.log('Launch data already loaded')
+        return
+    }
+
+    populateLaunches()
+}
+
+async function findLaunch(filter) {
+    return await Launch.findOne(filter)
 }
 
 async function existsLaunchWithId(launchId) {
-    return await Launch.findOne({ flightNumber: launchId })
+    return await finLaunch({ flightNumber: launchId })
 }
 
+
 async function saveNewLaunch(launch) {
-    // planet validation to make sure the planet on the new launch actually exists in the planets collection
-    const planet = await Planet.findOne({keplerName: launch.destination}, {
-        '_id':0, '__v': 0
-    })
-    
-    if (!planet) {
-        throw new Error('No matching planet found')
-    }
 
     try {
         // insert + update = upsert
@@ -116,6 +139,16 @@ async function getAllLaunches() {
 // POST
 
 async function scheduleNewLaunch(launch) {
+
+    // planet validation to make sure the planet on the new launch actually exists in the planets collection
+    const planet = await Planet.findOne({keplerName: launch.destination}, {
+        '_id':0, '__v': 0
+    })
+
+    if (!planet) {
+        throw new Error('No matching planet found')
+    }
+
     const latestFlightNumber = await getLatestFlightNumber() + 1
 
     const newLauch = Object.assign(launch, {
