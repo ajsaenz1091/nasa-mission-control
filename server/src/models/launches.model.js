@@ -5,21 +5,6 @@ const Planet = require('./planets.mongo')
 
 const DEFAULT_FLIGHT_NUMBER = 100
 
-const launch = {
-    flightNumber: 100, // flight_number
-    mission: 'Kepler Exploration X', // name
-    rocket: 'Explorer IS1', // rocket.name in response from axios request 
-    launchDate: new Date('December 27, 2030'), // date_local
-    destination: 'Kepler-442 b', // N/A
-    customers: ['NASA', 'NOOA'], // payload.customers for each payload
-    upcoming: true, // upcoming
-    success: true, // success
-}
-
-
-
-saveNewLaunch(launch)
-
 const SPACEX_API_URL = 'https://api.spacexdata.com/v4/launches/query'
 const LAUNCHES_REQ_BODY = {
     query: {},
