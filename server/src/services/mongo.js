@@ -1,8 +1,5 @@
 const mongoose = require('mongoose')
 
-
-const mongoose = require('mongoose');
-
 require('dotenv').config();
 
 // Update below to match your own MongoDB connection string.
