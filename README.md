@@ -16,6 +16,7 @@
  7. RESTful API convention
  8. MongoDB
  9. CRUD operations
+ 10. CI with GitHub Actions
  
  ## Design layers
  
