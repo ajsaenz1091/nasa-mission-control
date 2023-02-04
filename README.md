@@ -17,6 +17,8 @@
  8. MongoDB
  9. CRUD operations
  10. CI with GitHub Actions
+ 11. AWS EC2
+ 12. Docker
  
  ## Design layers
  
@@ -42,6 +44,8 @@
  <img src="images/Screenshot 2023-02-01 at 8.03.58 PM.png" height="400">
  
  <img src="images/Screenshot 2023-02-01 at 8.04.13 PM.png" height="400">
+ 
+ 
  
  
  
