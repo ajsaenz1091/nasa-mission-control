@@ -2,6 +2,10 @@
 
 # nasa-mission-control
 
+## Hosted on AWS using Docker container at:
+
+[nasa mission control](http://18.189.145.154:8000/)
+
 ## About
  I created this application to practice NodeJS and ExpressJS development. This application also makes use of MongoDB.
  
